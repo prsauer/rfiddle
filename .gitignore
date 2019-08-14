@@ -86,3 +86,7 @@ typings/
 
 # DynamoDB Local files
 .dynamodb/
+
+api.js.cache
+/node_modules
+match.example.txt
