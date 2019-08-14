@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-var api_cache_file = '/mnt/c/Users/banthur/Desktop/riotjs/api.js.cache';
+var api_cache_file = './api.js.cache';
 
 export function pickle(data) {
     let strData = JSON.stringify(data);
