@@ -10,10 +10,18 @@ import {
     sum
 } from "./util/stats";
 import common from "./util/common";
+import Signal from "./Signal";
 
 var myid = 'Z2SI1qI2W86XQcY0L1gQ6Cr6rB8xQ_3vUY8Hq4mLgg-Arw';
 
 class App extends Component {
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      signals: {},
+    };
+  }
 
   async componentDidMount() {
     console.log("Component Did Mount");
@@ -30,8 +38,7 @@ class App extends Component {
       console.log(matchDetails[0]['participants'][0]);
       console.log(matchDetails[0]['participantIdentities'][0]);
       console.log(Object.keys(matchDetails[0]));
-      console.log(
-        analyze([
+      let signals = analyze([
             common.gameDuration,
             common.alliedDeaths,
             common.enemyDeaths,
@@ -39,8 +46,11 @@ class App extends Component {
             common.myDeathsPer10,
             common.myKDA,
             common.myCSPerMin
-        ],
-        matchDetails, 'Armsperson').stats);
+      ], matchDetails, 'Armsperson').stats;
+      console.log(signals);
+      this.setState({
+        signals
+      });
     }, 250);
   }
 
@@ -49,9 +59,14 @@ class App extends Component {
   }
 
   render() {
+    console.log('Render.App', this);
+    let dp = Object.keys(this.state.signals).map(
+      k => <Signal name={k} {...this.state.signals[k]} />
+    );
     return(
      <div>
-        <h1>Hello React</h1>
+        <h1>Signals Analysis</h1>
+        { dp }
      </div>
    )
   }
