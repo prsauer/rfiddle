@@ -17,19 +17,19 @@ class Signal extends Component {
                     <p>{min.toFixed(1)}</p>
                 </div>
                 <div>
-                    <p>mean</p>
+                    <p>µ</p>
                     <p>{mean.toFixed(1)}</p>
                 </div>
                 <div>
-                    <p>sum</p>
+                    <p>Σ</p>
                     <p>{sum.toFixed(1)}</p>
                 </div>
                 <div>
-                    <p>variance</p>
+                    <p>σ<sup>2</sup></p>
                     <p>{variance.toFixed(1)}</p>
                 </div>
                 <div>
-                    <p>corrWin</p>
+                    <p>ρ<sub>win</sub></p>
                     <p>{corrWin.toFixed(1)}</p>
                 </div>
             </div>   
