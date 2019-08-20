@@ -1,10 +1,11 @@
 import { pickle, unpickle } from "./pickler.js";
 
 var headers = {
-    "X-Riot-Token": '12341234',
+    "X-Riot-Token": 'test',
     "Accept": "application/json",
 }
-var API_ROOT_URI = 'https://na1.api.riotgames.com'
+
+var API_ROOT_URI = 'https://intense-ravine-93254.herokuapp.com'
 var apiCache;
 unpickle(r => {
     apiCache = r;
@@ -35,9 +36,11 @@ export async function riotGet(path, cached=true) {
 }
 
 async function cachedGet(path, headers={}, cached=true) {
-    if (Object.keys(apiCache).includes(path) && cached) {
+    if (apiCache && Object.keys(apiCache).includes(path) && cached) {
+        console.log("Cache Hit", path);
         return apiCache[path];
     }
+    console.log("Cache Miss", path);
     let res = await fetch(path, { headers });
     let jdata = await res.json();
     console.log('API Call', path, '=>', res.status);

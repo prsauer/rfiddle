@@ -1,4 +1,3 @@
 todo-
 
-api proxy
-fix async race on comp mount
+async race on comp mount
