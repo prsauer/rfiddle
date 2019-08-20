@@ -8,7 +8,9 @@ export async function pickle(data) {
     return await AsyncStorage.setItem(api_cache_file, strData);
 }
 
-export async function unpickle() {
+export async function unpickle(cb) {
     var item = await AsyncStorage.getItem(api_cache_file);
-    return JSON.parse(item);
+    var res = JSON.parse(item);
+    console.log("Unpickled", res);
+    cb(res);
 }

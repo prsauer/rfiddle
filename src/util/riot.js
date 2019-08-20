@@ -1,11 +1,14 @@
 import { pickle, unpickle } from "./pickler.js";
 
 var headers = {
-    "X-Riot-Token": process.env.RIOT_API_KEY,
+    "X-Riot-Token": '12341234',
     "Accept": "application/json",
 }
 var API_ROOT_URI = 'https://na1.api.riotgames.com'
-var apiCache = unpickle();
+var apiCache;
+unpickle(r => {
+    apiCache = r;
+})
 
 export async function getChampions() {
     let rawData = await cachedGet('http://ddragon.leagueoflegends.com/cdn/9.14.1/data/en_US/champion.json');
@@ -23,8 +26,8 @@ export async function getMatchDetails(matchId, cached=true) {
     return await riotGet(`/lol/match/v4/matches/${matchId}`, cached=cached)
 }
 
-export function saveApiCache(cache) {
-    pickle(cache);
+export async function saveApiCache(cache) {
+    await pickle(cache);
 }
 
 export async function riotGet(path, cached=true) {
@@ -40,7 +43,7 @@ async function cachedGet(path, headers={}, cached=true) {
     console.log('API Call', path, '=>', res.status);
     if (res.status === 200) {
         apiCache[path] = jdata;
-        saveApiCache(apiCache);
+        await saveApiCache(apiCache);
     }
     return jdata;
 }
