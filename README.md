@@ -1,3 +1,4 @@
-# BYOK
-bring your own key
-export RIOT_API_KEY="your key"
+todo-
+
+api proxy
+fix async race on comp mount
