@@ -1,5 +1,4 @@
 import { pickle, unpickle } from "./pickler.js";
-import fetch from "node-fetch";
 
 var headers = {
     "X-Riot-Token": process.env.RIOT_API_KEY,
