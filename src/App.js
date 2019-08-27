@@ -12,6 +12,9 @@ import {
 import common from "./util/common";
 import Signal from "./Signal";
 import js_beautify from "js-beautify";
+import styled from "styled-components";
+
+import CodeArea from "./components/CodeArea";
 
 var myid = 'Z2SI1qI2W86XQcY0L1gQ6Cr6rB8xQ_3vUY8Hq4mLgg-Arw';
 
@@ -46,7 +49,8 @@ class App extends Component {
 
 
   addfunc = () => {
-    let ta = this.refs['userFuncText'].value;
+    let ta = this.refs['userFuncText'].getCode();
+    console.log('t', this.refs['userFuncText'].getCode(), ta);
     eval(ta);
     this.setState({
       ctr: this.state.ctr + 1,
@@ -85,18 +89,25 @@ class App extends Component {
     return(
      <div>
         <h1>Signals Analysis</h1>
-        <textarea ref="userFuncText" rows="8" cols="50" defaultValue={sampleFunc}></textarea>
+        <CodeArea
+          ref="userFuncText"
+          rows="8"
+          cols="50"
+          code={sampleFunc}
+          startVisible={true}
+        />
         <button onClick={this.addfunc}>Add Func</button>
         <button onClick={this.clicked}>Analyze</button>
         <div style={{display: "flex", flexDirection: "row"}}>
-          <div>
-            {funcs.map(f => <textarea rows="4" cols="60" value={js_beautify(f.toString(), {
-              wrap_line_length: 60,
-              break_chained_methods: true,
-              brace_style: "collapse",
-            })}></textarea>)}
+          <div style={{width: "20%"}}>
+            <h2>Tips</h2>
           </div>
-          <div style={{flex: 1}}>
+          <div style={{width: "35%"}}>
+            {
+              funcs.map(f => <CodeArea code={f} />)
+            }
+          </div>
+          <div style={{width: "35%"}}>
             { dp }
           </div>
          </div>
