@@ -5,7 +5,8 @@ var headers = {
     "Accept": "application/json",
 }
 
-var API_ROOT_URI = 'https://intense-ravine-93254.herokuapp.com'
+var API_ROOT_URI = 'https://intense-ravine-93254.herokuapp.com';
+
 var apiCache;
 unpickle(r => {
     apiCache = r;
