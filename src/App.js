@@ -1,4 +1,18 @@
 import React, { Component } from 'react';
+import { bindActionCreators } from 'redux';
+import { connect } from 'react-redux';
+import js_beautify from "js-beautify";
+import styled from "styled-components";
+import {
+  startLoading,
+  resetGames,
+  addGame
+} from "./reducers/games";
+import {
+  setSummonerId,
+  setQueue
+} from "./reducers/gamesContext";
+
 import {
   getChampions,
   getMatches,
@@ -9,11 +23,9 @@ import {
     analyze,
     sum
 } from "./util/stats";
+
 import common from "./util/common";
 import Signal from "./Signal";
-import js_beautify from "js-beautify";
-import styled from "styled-components";
-
 import CodeArea from "./components/CodeArea";
 
 var myid = 'Z2SI1qI2W86XQcY0L1gQ6Cr6rB8xQ_3vUY8Hq4mLgg-Arw';
@@ -47,6 +59,23 @@ class App extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.setSummonerId(myid);
+    this.props.setQueue(420);
+  }
+
+  loadMatches = async () => {
+    const {
+      summonerId,
+      queue
+    } = this.props;
+    var matches = await getMatches(summonerId, queue, false);
+    this.props.startLoading(matches.length);
+    for (let m of matches) {
+      let details = await getMatchDetails(m['gameId']);
+      this.props.addGame(details);
+    }
+  }
 
   addfunc = () => {
     let ta = this.refs['userFuncText'].getCode();
@@ -66,29 +95,29 @@ class App extends Component {
       var matchDetails = []
 
       for (let m of matches) {
-          let details = await getMatchDetails(m['gameId']);
-          matchDetails.push(details);
+        let details = await getMatchDetails(m['gameId']);
+        matchDetails.push(details);
       }
-    let signals = analyze(funcs, matchDetails, 'Armsperson').stats;
-      console.log(signals);
-      this.setState({
-        signals
-      });
+
     return false;
   }
 
-  componentWillUnmount() {
-    console.log("Component Unmounting");
+  componentDidUpdate(prevProps) {
+    if (this.props.percentLoaded == 1 && prevProps.percentLoaded != 1) {
+      let signals = analyze(funcs, this.props.games.gamesList, 'Armsperson').stats;
+      this.setState({
+        signals
+      });
+    }
   }
 
   render() {
-    console.log('Render.App', this);
     let dp = Object.keys(this.state.signals).map(
       k => <Signal name={k} {...this.state.signals[k]} />
     );
     return(
      <div>
-        <h1>Signals Analysis</h1>
+        <h1>Signals Analysis</h1><h2>{(100*this.props.percentLoaded).toFixed(1)}% Loaded</h2>
         <CodeArea
           ref="userFuncText"
           rows="8"
@@ -96,6 +125,7 @@ class App extends Component {
           code={sampleFunc}
           startVisible={true}
         />
+        <button onClick={this.loadMatches}>Load Data</button>
         <button onClick={this.addfunc}>Add Func</button>
         <button onClick={this.clicked}>Analyze</button>
         <div style={{display: "flex", flexDirection: "row"}}>
@@ -116,4 +146,24 @@ class App extends Component {
   }
 }
 
-export default App;
+const mapStateToProps = state => ({
+  percentLoaded: state.games.gamesList.length > 0 ? state.games.gamesList.length/state.games.totalCount : 0,
+  games: state.games,
+  summonerId: state.gamesContext.summonerId,
+  queue: state.gamesContext.queue
+});
+
+const mapDispatchToProps = dispatch => {
+  return bindActionCreators({
+    setSummonerId,
+    setQueue,
+    startLoading,
+    resetGames,
+    addGame
+  }, dispatch)
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(App);

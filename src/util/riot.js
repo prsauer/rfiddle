@@ -19,8 +19,8 @@ export async function getChampions() {
     return remap;
 }
 
-export async function getMatches(accountId, cached=true) {
-    let gm = await riotGet(`/lol/match/v4/matchlists/by-account/${accountId}?queue=420`, cached=cached);
+export async function getMatches(accountId, queue, cached=true) {
+    let gm = await riotGet(`/lol/match/v4/matchlists/by-account/${accountId}?queue=${queue}`, cached=cached);
     return gm.matches;
 }
 

@@ -1,7 +1,17 @@
 import "regenerator-runtime/runtime";
 
 import React from 'react';
+import { applyMiddleware, createStore } from 'redux';
+import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom';
-import App from './App.js';
+import logger from 'redux-logger';
 
-ReactDOM.render(<App/>, document.getElementById("App"));
+import App from './App.js';
+import rootReducer from './reducers'
+
+const store = createStore(
+    rootReducer,
+    applyMiddleware(logger)
+);
+
+ReactDOM.render(<Provider store={store}><App/></Provider>, document.getElementById("App"));
